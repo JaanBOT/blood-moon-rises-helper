@@ -68,6 +68,9 @@ public class BloodMoonRisesPanel extends PluginPanel
         sectionsPanel.setLayout(new BoxLayout(sectionsPanel, BoxLayout.Y_AXIS));
         sectionsPanel.setBackground(ColorScheme.DARK_GRAY_COLOR);
 
+        sectionsPanel.add(buildOverviewSection());
+        sectionsPanel.add(Box.createVerticalStrut(4));
+
         Map<String, List<Integer>> phases = new LinkedHashMap<>();
         for (int i = 0; i < QuestData.STEPS.size(); i++)
         {
@@ -80,13 +83,6 @@ public class BloodMoonRisesPanel extends PluginPanel
             sectionsPanel.add(section);
             sectionsPanel.add(Box.createVerticalStrut(4));
         }
-
-        JLabel reqs = new JLabel("<html><body style='width:150px'><b>Requirements</b><br>" + QuestData.REQUIREMENTS
-            + "<br><br><b>Items overview</b><br>" + QuestData.ITEMS + "</body></html>");
-        reqs.setForeground(Color.LIGHT_GRAY);
-        reqs.setFont(net.runelite.client.ui.FontManager.getRunescapeSmallFont());
-        sectionsPanel.add(Box.createVerticalStrut(8));
-        sectionsPanel.add(reqs);
 
         add(header, BorderLayout.NORTH);
         add(sectionsPanel, BorderLayout.CENTER);
@@ -108,6 +104,54 @@ public class BloodMoonRisesPanel extends PluginPanel
             revalidate();
             repaint();
         });
+    }
+
+    // Collapsible quest overview shown above phase 1: requirements, items,
+    // item-color legend, rewards and quest enemies.
+    private JPanel buildOverviewSection()
+    {
+        JPanel section = new JPanel(new BorderLayout());
+        section.setBackground(ColorScheme.DARK_GRAY_COLOR);
+        section.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JLabel content = new JLabel("<html><body style='width:150px'>"
+            + "<b>Requirements</b><br>" + QuestData.REQUIREMENTS
+            + "<br><br><b>Items overview</b><br>" + QuestData.ITEMS
+            + "<br><br><b>Item colors</b><br>"
+            + "<font color='#59d97c'>green = carried/equipped</font><br>"
+            + "<font color='#ffffff'>white = in your bank</font><br>"
+            + "<font color='#e57373'>red = not found</font><br>"
+            + "<i>Open your bank once to sync its contents.</i>"
+            + "<br><br><b>Rewards</b><br>" + QuestData.REWARDS
+            + "<br><br><b>Enemies</b><br>" + QuestData.ENEMIES
+            + "</body></html>");
+        content.setForeground(Color.LIGHT_GRAY);
+        content.setFont(net.runelite.client.ui.FontManager.getRunescapeSmallFont());
+
+        JPanel contentWrap = new JPanel(new BorderLayout());
+        contentWrap.setBackground(ColorScheme.DARK_GRAY_COLOR);
+        contentWrap.setBorder(BorderFactory.createEmptyBorder(4, 8, 4, 0));
+        contentWrap.add(content, BorderLayout.CENTER);
+        contentWrap.setVisible(false);
+
+        JButton headerButton = new JButton("▶ Overview");
+        headerButton.setHorizontalAlignment(JButton.LEFT);
+        headerButton.setFocusPainted(false);
+        headerButton.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+        headerButton.setForeground(Color.ORANGE);
+        headerButton.setFont(net.runelite.client.ui.FontManager.getRunescapeSmallFont());
+        headerButton.setMargin(new java.awt.Insets(4, 4, 4, 4));
+        headerButton.addActionListener(e ->
+        {
+            boolean show = !contentWrap.isVisible();
+            contentWrap.setVisible(show);
+            headerButton.setText((show ? "▼ " : "▶ ") + "Overview");
+            revalidate();
+        });
+
+        section.add(headerButton, BorderLayout.NORTH);
+        section.add(contentWrap, BorderLayout.CENTER);
+        return section;
     }
 
     private final class PhaseSection extends JPanel
@@ -204,14 +248,7 @@ public class BloodMoonRisesPanel extends PluginPanel
             setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             setToolTipText("Click to jump to this step");
 
-            QuestStep step = QuestData.STEPS.get(index);
-            StringBuilder html = new StringBuilder("<html><body style='width:150px'>").append(step.getText());
-            if (step.hasItems())
-            {
-                html.append("<br><font color='#8cc8ff'><i>").append(step.getItems()).append("</i></font>");
-            }
-            html.append("</body></html>");
-            label.setText(html.toString());
+            label.setText(buildHtml());
             label.setFont(net.runelite.client.ui.FontManager.getRunescapeSmallFont());
             add(label, BorderLayout.CENTER);
 
@@ -227,8 +264,49 @@ public class BloodMoonRisesPanel extends PluginPanel
             label.addMouseListener(click);
         }
 
+        private String buildHtml()
+        {
+            QuestStep step = QuestData.STEPS.get(index);
+            StringBuilder html = new StringBuilder("<html><body style='width:150px'>").append(step.getText());
+            if (step.hasItems())
+            {
+                html.append("<br><font color='#8cc8ff'><i>").append(step.getItems()).append("</i></font>");
+            }
+            if (step.hasTrackedItems() && plugin.getConfig().trackItems())
+            {
+                html.append("<br>");
+                boolean first = true;
+                for (String item : step.getTrackedItems())
+                {
+                    if (!first)
+                    {
+                        html.append("<font color='#888888'> · </font>");
+                    }
+                    first = false;
+                    html.append("<font color='").append(itemColor(item)).append("'>")
+                        .append(item).append("</font>");
+                }
+            }
+            html.append("</body></html>");
+            return html.toString();
+        }
+
+        private String itemColor(String item)
+        {
+            switch (plugin.getItemState(item))
+            {
+                case CARRIED:
+                    return "#59d97c";
+                case BANKED:
+                    return "#ffffff";
+                default:
+                    return "#e57373";
+            }
+        }
+
         void refresh(int currentStep)
         {
+            label.setText(buildHtml());
             if (index == currentStep)
             {
                 setBackground(CURRENT_BG);

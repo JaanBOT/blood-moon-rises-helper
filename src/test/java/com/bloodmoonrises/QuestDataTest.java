@@ -28,4 +28,31 @@ public class QuestDataTest
         }
         assertTrue(QuestData.STEPS.get(QuestData.STEPS.size() - 1).getPhase().startsWith("Complete"));
     }
+
+    @Test
+    public void trackingMetadataIsWellFormed()
+    {
+        boolean anyTracked = false;
+        for (QuestStep step : QuestData.STEPS)
+        {
+            for (String item : step.getTrackedItems())
+            {
+                assertFalse("blank tracked item", item.trim().isEmpty());
+            }
+            anyTracked |= step.hasTrackedItems();
+        }
+        assertTrue(anyTracked);
+    }
+
+    @Test
+    public void chatMatchingIsCaseInsensitive()
+    {
+        QuestStep mineStep = QuestData.STEPS.stream()
+            .filter(s -> !s.getChatTriggers().isEmpty())
+            .findFirst()
+            .orElseThrow(IllegalStateException::new);
+        String trigger = mineStep.getChatTriggers().get(0);
+        assertTrue(mineStep.matchesChat("Prefix " + trigger.toUpperCase() + " suffix"));
+        assertFalse(mineStep.matchesChat("Unrelated message"));
+    }
 }

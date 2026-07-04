@@ -30,6 +30,30 @@ public final class QuestData
         + "Recommended: fast-hitting ranged/magic weapon, Efaritay's aid, food, prayer/stamina potions, "
         + "Drakan's medallion, Morytania legs 3+.";
 
+    public static final String REWARDS =
+        "4 Quest points, Tome of experience (6x 30,000 XP in skills 70+), Hallowed flail, "
+        + "Sunspear upgrade, access to Vampyrium and Sangvesti, a fermenting vat, "
+        + "and permanent vyre tolerance (no more Vyrewatch harassment).";
+
+    // Enemies fought during the quest, with combat levels. Quest-instanced bosses
+    // are scaled versions, not their regular-game counterparts.
+    public static final String ENEMIES =
+        "Vyrewatch (lvl 87-125, several fights)<br>"
+        + "Vyrewatch Sentinel (lvl 151)<br>"
+        + "Acidic bloodveld (lvl 120)<br>"
+        + "Monk of Zamorak (lvl 45)<br>"
+        + "Venator (lvl 198, x3)<br>"
+        + "Sanguidae (lvl 164)<br>"
+        + "Webbed-winged crow (lvl 89)<br>"
+        + "Ancient Feral Vyre (lvl 210, two paired waves)<br>"
+        + "Maxilla beast (lvl 302, avoidable via safespots)<br>"
+        + "Nylocas Ischyros/Toxobolos (lvl 164, waves)<br>"
+        + "Blood serpent (lvl 92, wrangled not killed)<br>"
+        + "Maiden of Sugadinti (lvl 620, quest-scaled)<br>"
+        + "Nylocas Vasilias (lvl 480, quest-scaled)<br>"
+        + "The Wyrd (lvl 564, 1,100 HP - vampyrebane weapon required)<br>"
+        + "Lowerniel Drakan (lvl 786, 3,000 HP, fought four times)";
+
     public static final List<QuestStep> STEPS = ImmutableList.of(
         // Phase 1
         step("1. Starting Out",
@@ -44,12 +68,14 @@ public final class QuestData
         step("1. Starting Out",
             "Talk to Ivan Strom. Wearing the Vyre noble outfit (chest nearby if needed), select 'Ready to head to Darkmeyer'.")
             .items("Vyre noble outfit (worn) - search the nearby chest if you don't have it")
+            .tracked("Vyre noble top", "Vyre noble legs", "Vyre noble shoes")
             .highlight("Ivan Strom", "Chest"),
         step("1. Starting Out",
             "Defend Ivan from Vyrewatch and Sentinels for several minutes.")
             .detail("Pray Protect from Melee. Kill Acidic bloodvelds before they reach Ivan; feed Ivan food if he gets low. "
                 + "3 Vyrewatch spawn initially, more replace them; 3 Sentinels spawn throughout.")
             .items("Melee gear, food (some to feed Ivan), prayer potions")
+            .tracked("Prayer potion")
             .highlight("Ivan Strom", "Vyrewatch", "Vyrewatch Sentinel", "Acidic bloodveld"),
         step("1. Starting Out",
             "Talk to Ivan again - he'll ask you to meet him at the church in Slepe.")
@@ -60,6 +86,7 @@ public final class QuestData
             "Travel to Slepe and talk to Ivan Strom west of the chapel.")
             .detail("Bring a Super restore (Monks of Zamorak drain stats later). Keep 6 free inventory slots; no pets.")
             .items("Super restore, combat gear, 6 free inventory slots")
+            .tracked("Super restore")
             .highlight("Ivan Strom")
             .target(3660, 3298, 0),
         step("2. The Truth Hurtz",
@@ -80,6 +107,7 @@ public final class QuestData
         step("2. The Truth Hurtz",
             "In the Paterdomus chapel, kill the Monks of Zamorak and go up a level. Talk to Ivan and search the bookcases.")
             .items("Combat gear, Super restore (monks drain stats)")
+            .tracked("Super restore")
             .highlight("Monk of Zamorak", "Ivan Strom", "Bookcase")
             .target(3406, 3487, 0),
         step("2. The Truth Hurtz",
@@ -90,10 +118,13 @@ public final class QuestData
         step("2. The Truth Hurtz",
             "Talk to Ivan for Ivandis' writings, read it, talk to him again. Restock supplies, then talk to Ivan at Paterdomus before leaving.")
             .items("Restock: food, prayer potions, pickaxe (Ivan can provide one)")
+            .tracked("Pickaxe", "Prayer potion")
             .highlight("Ivan Strom"),
         step("2. The Truth Hurtz",
             "Mine the blockage south of Ivan and head northeast through the tunnel.")
             .items("Pickaxe")
+            .tracked("Pickaxe")
+            .onChat("break through the blockage", "mine your way through")
             .highlight("Blockage"),
         step("2. The Truth Hurtz",
             "Defeat the Vyrewatch and Sentinels in the tunnel.")
@@ -120,17 +151,20 @@ public final class QuestData
             "Collect the Small clock hand (southwest shelves), tinderbox, explosive barrel, Drakan emblem, "
             + "and Large clock hand (crate behind the emblem receptacle door).")
             .items("Collect here: Small clock hand, Tinderbox, Explosive barrel, Drakan emblem, Large clock hand")
+            .tracked("Small clock hand", "Tinderbox", "Drakan emblem", "Large clock hand")
             .highlight("Shelves", "Crate", "Explosive barrel", "Receptacle"),
         step("3. Castle Drakan",
             "Pull the lever east of the crescent moon door, take the portal, and reach the dining room fireplace. Set the clocks.")
             .detail("Western clock: big hand 11, small hand 9. Eastern clock: big hand 12, small hand 4. "
                 + "Then inspect and search the fireplace for a second Drakan emblem.")
             .items("Small clock hand, Large clock hand")
+            .tracked("Small clock hand", "Large clock hand")
             .highlight("Lever", "Portal", "Clock", "Fireplace"),
         step("3. Castle Drakan",
             "Crescent moon key: shuffle the Drakan emblems through the receptacle doors (blow the cracked wall with the barrel) "
             + "until you have three emblems, and grab the Ornate skull from the table.")
             .items("Explosive barrel, Drakan emblems, Tinderbox")
+            .tracked("Drakan emblem", "Tinderbox", "Ornate skull")
             .highlight("Receptacle", "Cracked wall", "Ornate skull"),
         step("3. Castle Drakan",
             "Find Veliaf downstairs and open the chest on the northern wall.")
@@ -149,6 +183,7 @@ public final class QuestData
                 + "Statues east to west should hold: Battleaxes, Spears, Maces, Swords. "
                 + "Combine crest halves, use the full crest on the fireplace for the New moon key.")
             .items("Left crest half + Right crest half -> Full crest")
+            .tracked("Left crest half", "Right crest half")
             .highlight("Venator", "Weapons rack", "Statue", "Chest", "Fireplace"),
         step("3. Castle Drakan",
             "Free Safalaan and Vanescula in the basement jail; pick up the Gibbous moon key.")
@@ -165,12 +200,14 @@ public final class QuestData
                 + "Mounted venator head, search it for the Ornate hourglass, then use skull + hourglass + knife on the "
                 + "display case. Search it for the Gilded key.")
             .items("Ornate skull, Ornate hourglass, Ornate knife, 2x Fancy gem")
+            .tracked("Ornate skull", "Ornate hourglass", "Ornate knife", "Fancy gem")
             .highlight("Bookcase", "Mounted venator head", "Display case"),
         step("3. Castle Drakan",
             "Full moon key: through the gilded door, kill the Venator, talk to Ivan, then solve the gilded bookcase.")
             .detail("Get the Gilded book (north bookcase) and Vampyre book (SE bookcase). Use the gilded book on the western "
                 + "gilded bookcase and arrange the Vampyric House symbols ALPHABETICALLY. Take the Full moon key in the secret passage.")
             .items("Gilded book, Vampyre book")
+            .tracked("Gilded book", "Vampyre book")
             .highlight("Venator", "Ivan Strom", "Bookcase", "Gilded bookcase"),
         step("3. Castle Drakan",
             "Solid key: reach the potion room (kill Webbed-winged crows if needed) and solve the basin puzzle.")
@@ -184,6 +221,7 @@ public final class QuestData
             .detail("Refiner puzzle - panel must read 53 HP: Blood+Essence = 17 (make TWO), Blood+Water = 13, "
                 + "Essence+Water = 6. Use all four vials on the basin, then destroy the Stockpile through the north door.")
             .items("2x Vial of water, 3x Vial of blood, 3x Pure essence (all from the NW shelves)")
+            .tracked("Vial of water", "Vial of blood", "Pure essence")
             .highlight("Shelves", "Basin", "Stockpile"),
 
         // Phase 4
@@ -197,6 +235,7 @@ public final class QuestData
             .detail("Then: bucket from the water-icon house, fill at the well, use on the north barrel in the Myrmel house "
                 + "for the Shadum key. Shadum house (SE) has the trapdoor key.")
             .items("Dusty book, Bolt cutters, Loop half + Tooth half, Bucket, Shadum key")
+            .tracked("Bolt cutters", "Myrmel key", "Shadum key")
             .highlight("Bookshelf", "Shed", "Chained door", "Well", "Barrel"),
         step("4. Blood Hunt",
             "In the bank, spam-click the crank to open the gate, climb through the trapdoor and open the chest.")
@@ -215,6 +254,7 @@ public final class QuestData
                 + "tick-perfect. Keep camera high with you and Drakan on the same vertical axis. Safe tiles sparkle at first. "
                 + "Low on supplies? Right-click 'quick escape' to restock at the tent.")
             .items("Melee gear, Rancid slimy (brews), Foul chunky (restores), Rank frothy (combat boost)")
+            .tracked("Rancid slimy", "Foul chunky", "Rank frothy")
             .highlight("Lowerniel Drakan"),
 
         // Phase 6
@@ -238,6 +278,7 @@ public final class QuestData
             "Wrangle the three Blood Serpents from BEHIND (front = 5 poison damage), combine into a Serpent rope, "
             + "use it on the long branched tree southeast.")
             .items("3x Blood serpent -> Serpent rope")
+            .tracked("Blood serpent", "Serpent rope")
             .highlight("Blood serpent", "Long branched tree"),
 
         // Phase 7
@@ -246,6 +287,7 @@ public final class QuestData
             .detail("Bowl (shelves by sink), potato + meat (cupboard behind supply table). Water + potato = incomplete stew; "
                 + "cook meat, add it, cook stew, add Amitire leaves (plant east of the door). Use on Safalaan.")
             .items("Bowl, Potato, Meat, Amitire leaves (all found here)")
+            .tracked("Bowl", "Potato", "Amitire")
             .highlight("Safalaan Hallow", "Efaritay Hallow", "Shelves", "Cupboard", "Range", "Sink", "Amitire plant"),
         step("7. The Hideout",
             "Talk to Efaritay, then upgrade your flail to the Hallowed flail.")
@@ -253,14 +295,17 @@ public final class QuestData
                 + "Enchant diamond (west chest) -> Enchanted diamond sickle (b). Add blisterwood logs -> Blisterwood sickle (e). "
                 + "Smith at the anvil with hallowed marks, hammer and your blisterwood flail.")
             .items("Blisterwood flail, Hammer, Hallowed marks, Blessed silver sickle, 2x Enchanted diamond, Blisterwood logs")
+            .tracked("Blisterwood flail", "Hammer", "Hallowed mark", "Blisterwood logs")
             .highlight("Efaritay Hallow", "Crate", "Chest", "Anvil", "Workbench"),
         step("7. The Hideout",
             "Talk to Sarei and Ivan in the east room, then fletch Blisterwood stakes (knife on workbench, logs in the north crate).")
             .items("Knife, Blisterwood logs")
+            .tracked("Knife", "Blisterwood logs", "Blisterwood stake")
             .highlight("Sarei", "Ivan Strom", "Workbench", "Crate"),
         step("7. The Hideout",
             "Talk to Vanescula downstairs, then Sugadinti Vitur. Gear up and go to the bridge.")
             .items("~15 Rancid slimy, ~5 Foul chunky, 1 Rank frothy, melee gear")
+            .tracked("Rancid slimy", "Foul chunky", "Rank frothy")
             .highlight("Vanescula Drakan", "Sugadinti Vitur"),
 
         // Phase 8
@@ -296,6 +341,7 @@ public final class QuestData
                 + "Slam: right arm -> move to HIS LEFT; left arm -> HIS RIGHT. Below 60%: Bloody Screech - run away, prayers off, "
                 + "avoid blood pools.")
             .items("Hallowed flail or Blisterwood stakes, Stamina potion, Saradomin brews, Super restores, earmuffs/slayer helm")
+            .tracked("Hallowed flail", "Blisterwood stake", "Stamina potion", "Saradomin brew", "Super restore")
             .highlight("Ivan Strom", "Veliaf Hurtz", "Wyrd", "Entry")
             .target(3522, 3230, 0),
 
@@ -314,6 +360,7 @@ public final class QuestData
                 + "3-4 Foul chunky, rest Rancid slimy. Pre-pot trick: drop full potions, sip inventory ones, swap. "
                 + "Efaritay's aid boosts DPS. No blood fury healing, Vengeance, serp venom or thralls.")
             .items("Hallowed flail, Efaritay's aid, 1 Jar of congealed blood, 2 Rank frothy, 3-4 Foul chunky, rest Rancid slimy")
+            .tracked("Hallowed flail", "Efaritay's aid", "Jar of congealed blood", "Rank frothy", "Foul chunky", "Rancid slimy")
             .highlight("Ivan Strom", "Sugadinti Vitur", "Efaritay Hallow", "Portal", "Supply chest")
             .target(3684, 3172, 0),
         step("12. The Blood Moon Falls",

@@ -15,6 +15,15 @@ Vampyrium.
   gauntlet, and the forest escape — including spear-dodge directions, the phase 2 blood-wave
   pattern, phase 3 lunge reads, and prayer-switch timing.
 - **Progress** is saved between sessions. Advance with the panel's *Done, next* / *Back* buttons.
+- **Live item tracking** — steps with concrete required items show them color-coded in the panel:
+  **green** = in your inventory or equipped, **white** = seen in your bank, **red** = not found.
+  Open your bank once per session so the plugin learns its contents.
+- **Chat auto-advance** — matching game messages mark a step complete and advance the guide, and
+  the quest-complete screen jumps straight to the final step. The trigger phrases are best-effort
+  guesses at Jagex's wording; refine them in `QuestData` (`.onChat(...)`) as real messages are
+  confirmed in game.
+- **Overview pane** — a collapsible section above phase 1 with the quest's requirements, items
+  overview, item-color legend, rewards, and every enemy with its combat level.
 - **Auto-advance hook**: once the community documents the quest's progress varbit, enter its ID in
   the plugin config to have the plugin react to progress changes (manual mode by default).
 

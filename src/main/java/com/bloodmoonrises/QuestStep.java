@@ -15,6 +15,12 @@ public class QuestStep
     private String detail;
     // Items needed for this step (shown in the panel dropdown and overlay).
     private String items;
+    // Concrete item names to live-track against inventory/equipment/bank.
+    // Matched case-insensitively as a substring of the item name, so "Pickaxe"
+    // matches "Rune pickaxe" and "Super restore" matches "Super restore(4)".
+    private final List<String> trackedItems = new ArrayList<>();
+    // Chat-message phrases that mark this step complete (advance to the next step).
+    private final List<String> chatTriggers = new ArrayList<>();
     // NPC/GameObject names to highlight in the scene while this step is active.
     private final List<String> highlights = new ArrayList<>();
     // Where to go for this step; drives the tile highlight, minimap guide and world map marker.
@@ -43,6 +49,18 @@ public class QuestStep
         return this;
     }
 
+    QuestStep tracked(String... names)
+    {
+        trackedItems.addAll(Arrays.asList(names));
+        return this;
+    }
+
+    QuestStep onChat(String... phrases)
+    {
+        chatTriggers.addAll(Arrays.asList(phrases));
+        return this;
+    }
+
     QuestStep highlight(String... names)
     {
         highlights.addAll(Arrays.asList(names));
@@ -63,6 +81,29 @@ public class QuestStep
     public boolean hasItems()
     {
         return items != null && !items.isEmpty();
+    }
+
+    public boolean hasTrackedItems()
+    {
+        return !trackedItems.isEmpty();
+    }
+
+    // Message with chat tags already stripped.
+    public boolean matchesChat(String message)
+    {
+        if (message == null)
+        {
+            return false;
+        }
+        String lower = message.toLowerCase();
+        for (String trigger : chatTriggers)
+        {
+            if (lower.contains(trigger.toLowerCase()))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean matchesHighlight(String name)

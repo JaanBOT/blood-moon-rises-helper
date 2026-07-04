@@ -45,11 +45,35 @@ public interface BloodMoonRisesConfig extends Config
     }
 
     @ConfigItem(
+        keyName = "trackItems",
+        name = "Track step items",
+        description = "Color each step's tracked items in the panel: green = carried/equipped, "
+            + "white = in your bank, red = not seen. Open your bank once to sync bank contents.",
+        position = 4
+    )
+    default boolean trackItems()
+    {
+        return true;
+    }
+
+    @ConfigItem(
+        keyName = "autoAdvance",
+        name = "Auto-advance on chat messages",
+        description = "Advance the current step when a matching game message appears, "
+            + "and jump to the final step when the quest complete screen shows",
+        position = 5
+    )
+    default boolean autoAdvance()
+    {
+        return true;
+    }
+
+    @ConfigItem(
         keyName = "progressVarbit",
         name = "Progress varbit ID",
         description = "Varbit tracking quest progress, for auto-advancing steps. "
             + "Leave at 0 (manual mode) until the community documents the varbit for The Blood Moon Rises.",
-        position = 3
+        position = 7
     )
     default int progressVarbit()
     {
