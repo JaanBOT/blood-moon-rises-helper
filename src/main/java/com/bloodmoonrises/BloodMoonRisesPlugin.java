@@ -36,8 +36,8 @@ import net.runelite.api.events.VarbitChanged;
 import net.runelite.api.events.WallObjectDespawned;
 import net.runelite.api.events.WallObjectSpawned;
 import net.runelite.api.events.WidgetLoaded;
+import net.runelite.api.widgets.InterfaceID;
 import net.runelite.api.widgets.Widget;
-import net.runelite.api.widgets.WidgetID;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.game.ItemManager;
@@ -342,7 +342,7 @@ public class BloodMoonRisesPlugin extends Plugin
     @Subscribe
     public void onWidgetLoaded(WidgetLoaded event)
     {
-        if (event.getGroupId() == WidgetID.QUEST_COMPLETED_GROUP_ID && config.autoAdvance())
+        if (event.getGroupId() == InterfaceID.QUEST_COMPLETED && config.autoAdvance())
         {
             // Widget children aren't populated until after the load event.
             clientThread.invokeLater(this::checkQuestComplete);
@@ -353,7 +353,7 @@ public class BloodMoonRisesPlugin extends Plugin
     {
         for (int child = 0; child <= 15; child++)
         {
-            Widget w = client.getWidget(WidgetID.QUEST_COMPLETED_GROUP_ID, child);
+            Widget w = client.getWidget(InterfaceID.QUEST_COMPLETED, child);
             if (w != null && w.getText() != null && w.getText().contains("Blood Moon Rises"))
             {
                 setStep(QuestData.STEPS.size() - 1);
